@@ -176,3 +176,32 @@ release build and setup file.
   and drives the packaged Electron app through menu → host → lobby → match.
 * `npm run dist:win` — produces `release/Twin Rivers Arena Setup <version>.exe`
   and `release/win-unpacked/` (runnable x64 app).
+
+## 10. Build environment notes (building the Windows installer on Linux/macOS)
+
+electron-builder needs **Wine** on non-Windows hosts for two NSIS steps: it runs
+the freshly built installer once (under Wine) to pre-generate the uninstaller,
+and it runs `rcedit` (under Wine) to embed the icon and version resources when
+`win.signAndEditExecutable` is true. With Wine present the standard flow works
+unchanged and produces a fully branded `Twin Rivers Arena.exe` plus the NSIS
+`Setup.exe`.
+
+* **This workspace**: system Wine 9 (`wine64` + `wine32:i386`) is installed and
+  verified to run 32-bit and 64-bit Windows executables, so
+  `electron-builder --win nsis --x64` works. Keep `win.signAndEditExecutable: true`.
+* **electron-builder's own Wine toolset** (`toolsets.wine: "1.0.1"`) was also
+  evaluated: the Linux bundle currently ships without its `x86_64-windows` PE
+  DLLs and fails with `c0000135` (ntdll/kernel32 not found), so prefer system
+  Wine on Linux. On macOS the bundled toolset is the documented route.
+* **Offline caches**: the Electron `win32-x64` zip is in `~/.cache/electron/` and
+  the NSIS 3.0.4.1, nsis-resources 3.4.1, winCodeSign 2.6.0 and 7zip toolset
+  archives are in `~/.cache/electron-builder/<releaseName>/<filename>`, so no
+  downloads are needed. If a download is ever attempted behind a proxy and
+  Node's fetch fails, set `ELECTRON_GET_USE_PROXY=true` or pre-place the archive
+  under that cache path (curl works where Node's fetch does not).
+* **Without Wine** (plain CI runner): set `win.signAndEditExecutable: false`
+  (the exe keeps Electron's default icon/metadata) and use a custom
+  `nsis.script` that writes its uninstaller at install time — electron-builder
+  skips the Wine-only uninstaller pre-generation for custom scripts.
+
+On a Windows host none of this applies: `npm run dist:win` just works.
