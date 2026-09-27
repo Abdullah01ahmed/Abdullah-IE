@@ -62,6 +62,8 @@ export interface GameWorldOptions {
 }
 
 const DEFAULT_READY_TIMEOUT_MS = 6000;
+/** How long loadMatch() waits for attach() when a match starts before the canvas has mounted (ms). */
+const ATTACH_WAIT_TIMEOUT_MS = 20000;
 
 interface MatchSystems {
   info: MatchStartInfo;
@@ -107,6 +109,8 @@ export class GameWorld implements IGameWorld {
   private readonly tmpA = new Vector3();
   private readonly tmpB = new Vector3();
   private readonly tmpC = new Vector3();
+  /** Callers of loadMatch() that arrived before attach() completed. */
+  private attachWaiters: { resolve: () => void; reject: (e: Error) => void }[] = [];
 
   constructor(
     private readonly deps: GameWorldDeps,
@@ -125,7 +129,13 @@ export class GameWorld implements IGameWorld {
     this.canvas = canvas;
     this.settings = useStore.getState().settings;
     this.quality = deriveQuality(this.settings.graphics);
-    const engine = await this.createEngine(canvas, this.settings);
+    let engine: AbstractEngine;
+    try {
+      engine = await this.createEngine(canvas, this.settings);
+    } catch (err) {
+      this.settleAttachWaiters(err instanceof Error ? err : new Error(String(err)));
+      throw err;
+    }
     this.engine = engine;
     engine.setHardwareScalingLevel(1 / this.settings.graphics.renderScale);
     engine.onContextLostObservable.add(() => this.onContextLost());
@@ -158,6 +168,37 @@ export class GameWorld implements IGameWorld {
     }
     this.audio.setVolumes(this.settings.audio);
     this.clearCanvas();
+    this.settleAttachWaiters(null);
+  }
+
+  /**
+   * Resolves once attach() has completed. The Session can receive
+   * `match.start` before React has mounted the GameCanvas (which is what calls
+   * attach()), so loadMatch() waits here instead of failing.
+   */
+  private waitForAttach(timeoutMs = ATTACH_WAIT_TIMEOUT_MS): Promise<void> {
+    if (this.isAttached()) return Promise.resolve();
+    return new Promise<void>((resolve, reject) => {
+      const timer = setTimeout(() => {
+        this.attachWaiters = this.attachWaiters.filter((w) => w !== entry);
+        reject(new Error('The game canvas did not attach in time (GameWorld.attach() must be called from the game canvas).'));
+      }, timeoutMs);
+      const entry = {
+        resolve: () => { clearTimeout(timer); resolve(); },
+        reject: (e: Error) => { clearTimeout(timer); reject(e); },
+      };
+      this.attachWaiters.push(entry);
+    });
+  }
+
+  private settleAttachWaiters(error: Error | null): void {
+    const waiters = this.attachWaiters;
+    this.attachWaiters = [];
+    for (const w of waiters) (error ? w.reject(error) : w.resolve());
+  }
+
+  private isAttached(): boolean {
+    return !!(this.engine && this.scene && this.camera && this.canvas);
   }
 
   private async createEngine(canvas: HTMLCanvasElement, settings: ClientSettings): Promise<AbstractEngine> {
@@ -227,6 +268,7 @@ export class GameWorld implements IGameWorld {
   dispose(): void {
     if (this.contextLostTimer) clearTimeout(this.contextLostTimer);
     this.contextLostTimer = null;
+    this.settleAttachWaiters(new Error('GameWorld disposed'));
     this.disposeEngine();
     this.audio.dispose();
     this.lockListeners.clear();
@@ -238,6 +280,10 @@ export class GameWorld implements IGameWorld {
   // ---------------------------------------------------------------------------
 
   async loadMatch(info: MatchStartInfo, selfId: number, room: RoomState, onProgress: (progress: number, label: string) => void): Promise<void> {
+    if (!this.isAttached()) {
+      onProgress(0, 'Starting renderer…');
+      await this.waitForAttach();
+    }
     if (!this.engine || !this.scene || !this.camera || !this.canvas) throw new Error('GameWorld.attach() must complete before loadMatch()');
     if (this.match) this.unloadMatch();
     this.loading = { info, selfId, room };
