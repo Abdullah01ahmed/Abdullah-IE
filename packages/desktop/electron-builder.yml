@@ -1,0 +1,60 @@
+# electron-builder configuration for the Windows build of Twin Rivers: Arena.
+# Inputs are staged by `npm run build` in this package (dist/, renderer/, resources/server/).
+
+appId: iq.twinrivers.arena
+productName: Twin Rivers Arena
+copyright: Copyright © 2026 Twin Rivers Arena contributors
+
+# `electron` is hoisted to the workspace root where electron-builder cannot find
+# it, so the version is stated here. `npm run dist:*` (scripts/dist.mjs) reads
+# the installed version and overrides this value, warning if the two differ.
+electronVersion: 44.4.5
+
+directories:
+  output: release
+  buildResources: build
+
+files:
+  - dist/**
+  - renderer/**
+  - package.json
+
+extraResources:
+  - from: resources/server
+    to: server
+  # Window/taskbar icon at runtime (the exe itself is only branded when
+  # signAndEditExecutable is true, see below).
+  - from: build/icon.ico
+    to: icon.ico
+  - from: build/icon.png
+    to: icon.png
+
+asar: true
+npmRebuild: false
+
+win:
+  target:
+    - target: nsis
+      arch:
+        - x64
+  icon: build/icon.ico
+  # true embeds the icon and version resources into "Twin Rivers Arena.exe"
+  # (rcedit). On Windows this is native; on Linux/macOS electron-builder runs
+  # rcedit — and the NSIS uninstaller pre-generation — under Wine, which is
+  # installed in the reference build environment (see docs/ARCHITECTURE.md §10).
+  # On a host without Wine pass `--config.win.signAndEditExecutable=false`
+  # (the exe then keeps Electron's default icon/metadata; the installer still works).
+  signAndEditExecutable: true
+  artifactName: Twin-Rivers-Arena-Setup-${version}.exe
+
+nsis:
+  oneClick: false
+  perMachine: false
+  allowToChangeInstallationDirectory: true
+  createDesktopShortcut: true
+  createStartMenuShortcut: true
+  shortcutName: Twin Rivers Arena
+  runAfterFinish: true
+  deleteAppDataOnUninstall: false
+  # Adds/removes the Windows Firewall inbound rule for the game executable.
+  include: build/installer.nsh
