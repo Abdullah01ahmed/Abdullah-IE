@@ -1,0 +1,17 @@
+{
+  "name": "@tra/shared",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Twin Rivers: Arena — shared protocol, constants, deterministic simulation, map schema and map data.",
+  "type": "module",
+  "main": "./src/index.ts",
+  "types": "./src/index.ts",
+  "exports": {
+    ".": "./src/index.ts",
+    "./maps": "./src/maps/index.ts"
+  },
+  "scripts": {
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "test": "vitest run --project shared"
+  }
+}

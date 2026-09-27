@@ -1,0 +1,25 @@
+{
+  "name": "@tra/server",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Twin Rivers: Arena — authoritative multiplayer server (also used as the embedded host server and as a dedicated server).",
+  "type": "module",
+  "main": "./src/index.ts",
+  "bin": {
+    "tra-server": "./dist/server.cjs"
+  },
+  "scripts": {
+    "dev": "tsx src/index.ts",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "build": "esbuild src/index.ts --bundle --platform=node --target=node20 --format=cjs --outfile=dist/server.cjs --external:bufferutil --external:utf-8-validate --sourcemap --banner:js=\"#!/usr/bin/env node\"",
+    "start": "node dist/server.cjs",
+    "test": "vitest run --project server"
+  },
+  "dependencies": {
+    "@tra/shared": "0.1.0",
+    "ws": "^8.18.0"
+  },
+  "devDependencies": {
+    "@types/ws": "^8.18.1"
+  }
+}

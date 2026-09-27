@@ -1,0 +1,30 @@
+{
+  "name": "@tra/client",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Twin Rivers: Arena — game client (Babylon.js renderer + React UI). Runs inside Electron; also runs in a browser for development.",
+  "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1 --port 5173 --strictPort",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
+    "build": "vite build",
+    "preview": "vite preview --port 5174",
+    "test": "vitest run --project client"
+  },
+  "dependencies": {
+    "@babylonjs/core": "^9.28.0",
+    "@fontsource/noto-kufi-arabic": "^5.3.0",
+    "@fontsource/noto-naskh-arabic": "^5.3.0",
+    "@tra/shared": "0.1.0",
+    "react": "^19.2.0",
+    "react-dom": "^19.2.0",
+    "zustand": "^5.0.15"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.0",
+    "@types/react-dom": "^19.2.0",
+    "@vitejs/plugin-react": "^6.1.1",
+    "jsdom": "^30.1.1",
+    "vite": "^8.3.1"
+  }
+}
