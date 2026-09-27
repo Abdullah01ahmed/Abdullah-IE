@@ -19,9 +19,10 @@ export default defineConfig({
     chunkSizeWarningLimit: 4000,
     rollupOptions: {
       output: {
-        manualChunks: {
-          babylon: ['@babylonjs/core'],
-          react: ['react', 'react-dom', 'zustand'],
+        manualChunks(id: string) {
+          if (id.includes('@babylonjs')) return 'babylon';
+          if (/node_modules\/(react|react-dom|zustand|scheduler)\//.test(id)) return 'react';
+          return undefined;
         },
       },
     },
