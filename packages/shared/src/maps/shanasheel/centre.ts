@@ -6,7 +6,7 @@
 import { box, prop, stairs } from '../../map/builder';
 import type { MapBlock, MapLight, MapProp } from '../../map/schema';
 import {
-  LOW_ROOF, UPPER_ROOF, deck, door, lantern, lowCover, parapetPiece, patch, wallX, wallZ, win,
+  LOW_ROOF, UPPER_ROOF, clutter, deck, door, lantern, lowCover, palm, parapetPiece, patch, wallX, wallZ, win,
 } from './util';
 
 const blocks: MapBlock[] = [];
@@ -74,7 +74,7 @@ P('east', -9.6, TH.z1);
 // Rooftop cover and clutter.
 blocks.push(lowCover(-0.6, -13.6, 1.4, -12.8, 1.0, 'brick', TEAHOUSE_ROOF_TOP, 'cover'));
 blocks.push(lowCover(1.4, -8.6, 3.2, -7.6, 0.9, 'wood', TEAHOUSE_ROOF_TOP, 'cover'));
-props.push(prop('water_tank', 2.6, TEAHOUSE_ROOF_TOP, -14.6));
+props.push(clutter('water_tank', 2.6, TEAHOUSE_ROOF_TOP, -14.6, { scale: 0.95 }));
 props.push(prop('flag', 3.6, TEAHOUSE_ROOF_TOP, -5.4, { tint: [0.9, 0.85, 0.7] }));
 props.push(prop('satellite_dish', -3.2, TEAHOUSE_ROOF_TOP, -15.4, { yaw: 2.4 }));
 props.push(prop('antenna', -2.2, TEAHOUSE_ROOF_TOP, -5.5));
@@ -93,7 +93,7 @@ props.push(prop('table', 1.6, 0.02, -7.2), prop('chair', 2.4, 0.02, -7.2, { yaw:
 props.push(prop('table', 2.4, 0.02, -12.4), prop('chair', 3.2, 0.02, -12.4, { yaw: -Math.PI / 2 }), prop('chair', 2.4, 0.02, -13.2, { yaw: 0 }));
 props.push(prop('teapot', 1.6, 0.77, -7.2), prop('teapot', 2.4, 0.77, -12.4));
 props.push(prop('bench', 2.9, 0.02, -15.5, { yaw: 0 }));
-for (const [x, z] of [[-1.4, -6.4], [2.6, -10.2]] as const) {
+for (const [x, z] of [[2.6, -10.2]] as const) {
   const l = lantern(x, 2.6, z);
   props.push(l.prop);
   lights.push(l.light);
@@ -108,8 +108,8 @@ props.push(prop('fountain', 0, 0.02, 5, { scale: 1.0 }));
 blocks.push(lowCover(-5.6, 3.0, -4.4, 6.0, 0.6, 'stone', 0, 'planter'));
 blocks.push(lowCover(4.4, 3.0, 5.6, 6.0, 0.6, 'stone', 0, 'planter'));
 blocks.push(lowCover(-1.0, -2.2, 1.0, -1.4, 0.6, 'stone', 0, 'planter'));
-props.push(prop('palm', -5.0, 0.6, 4.5, { yaw: 0.3 }), prop('palm', 5.0, 0.6, 4.5, { yaw: 1.7, scale: 1.15 }));
-props.push(prop('pot', -0.6, 0.6, -1.8, { scale: 0.6 }), prop('pot', 0.6, 0.6, -1.8, { scale: 0.6 }));
+props.push(palm(-5.0, 0.6, 4.5, 0.3, 1.3), palm(5.0, 0.6, 4.5, 1.7, 1.45));
+props.push(prop('pot', -0.5, 0.6, -1.8, { scale: 0.6, collide: false }), prop('pot', 0.5, 0.6, -1.8, { scale: 0.6, collide: false }));
 // Café tables in front of the tea house.
 for (const x of [-3.2, 3.2]) {
   props.push(prop('table', x, 0, -2.8));
@@ -121,7 +121,7 @@ props.push(prop('table', -4.8, 0.02, 7.6), prop('chair', -4.8, 0.02, 8.4, { yaw:
 blocks.push(lowCover(3.4, -2.2, 5.0, -1.4, 1.0, 'wood', 0, 'cover'));
 blocks.push(lowCover(-6.6, 4.4, -5.6, 5.4, 1.0, 'wood', 0, 'cover'));
 blocks.push(lowCover(5.6, 7.4, 6.6, 8.6, 1.0, 'wood', 0, 'cover'));
-props.push(prop('sacks', 4.2, 0, -1.0, { yaw: 0.4 }), prop('barrel', -5.9, 0, 6.0), prop('bicycle', 6.5, 0, 1.4, { yaw: 0 }));
+props.push(clutter('sacks', 4.2, 0, -1.0, { yaw: 0.4 }), clutter('barrel', -5.9, 0, 6.0), prop('bicycle', 6.5, 0, 1.4, { yaw: 0 }));
 props.push(prop('bench', -4.5, 0, 8.95, { yaw: 0 }), prop('bench', 4.5, 0, 8.95, { yaw: 0 }));
 props.push(prop('rug', -4.6, 0, 1.2, { yaw: 0.05, tint: [0.6, 0.25, 0.2] }), prop('rug', 4.6, 0, 6.4, { yaw: -0.1, tint: [0.2, 0.4, 0.5] }));
 // Awnings and signs on the shop fronts facing the square.
@@ -132,7 +132,7 @@ props.push(prop('sign', 6.75, 3.2, 4.6, { text: 'خياط', yaw: -Math.PI / 2 })
 props.push(prop('sign', 6.75, 3.2, -2.5, { text: 'حلاق', yaw: -Math.PI / 2 }));
 props.push(prop('sign', -6.75, 3.2, -4.0, { text: 'شاي', yaw: Math.PI / 2, scale: 0.8 }));
 props.push(prop('cloth_line', 0, 4.6, 0.5, { yaw: Math.PI / 2, scale: 1.6 }));
-for (const [x, z] of [[-6.2, 0.4], [6.2, 8.8], [-2.2, 8.9], [2.2, 8.9]] as const) {
+for (const [x, z] of [[-6.2, 0.4], [6.2, 8.8], [-2.2, 8.9]] as const) {
   const l = lantern(x, 2.7, z);
   props.push(l.prop);
   lights.push(l.light);
@@ -155,8 +155,8 @@ props.push(prop('sign', -1.55, 2.9, 12.5, { text: 'صيدلية', yaw: Math.PI /
 props.push(prop('door', -1.55, 0, 14.4, { yaw: Math.PI / 2 }), prop('window', -1.55, 1.5, 11.2, { yaw: Math.PI / 2 }));
 props.push(prop('shanasheel', 1.4, 3.6, 12.8, { yaw: -Math.PI / 2 }), prop('window', 1.45, 1.5, 15.2, { yaw: -Math.PI / 2 }));
 props.push(prop('cloth_line', 0, 4.2, 13.5, { yaw: Math.PI / 2, scale: 0.75 }));
-props.push(prop('crate', -1.0, 0, 15.4, { scale: 0.8 }));
-for (const [x, z] of [[-1.1, 10.4], [1.1, 15.6]] as const) {
+props.push(clutter('crate', -1.0, 0, 15.4, { scale: 0.8 }));
+for (const [x, z] of [[-1.1, 10.4]] as const) {
   const l = lantern(x, 2.9, z);
   props.push(l.prop);
   lights.push(l.light);

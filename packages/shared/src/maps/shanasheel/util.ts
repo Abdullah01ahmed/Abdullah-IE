@@ -9,8 +9,8 @@
  * generated on top of it (an unreachable island for bots). Solid masses avoid
  * the problem by being taller than the playable ceiling (MASS_H > bounds.max.y).
  */
-import { box, prop } from '../../map/builder';
-import type { MapBlock, MapLight, MapProp, MaterialId, SpawnPoint } from '../../map/schema';
+import { PROP_FOOTPRINT, box, prop } from '../../map/builder';
+import type { MapBlock, MapLight, MapProp, MaterialId, PropKind, SpawnPoint } from '../../map/schema';
 import type { BlockOpts } from '../../map/builder';
 
 /** Interior height of ground-floor rooms. */
@@ -115,9 +115,42 @@ export function parapetPiece(side: 'north' | 'south' | 'east' | 'west', x0: numb
   }
 }
 
-/** Low cover piece (crate stack, counter, planter, low wall). */
+/**
+ * Grid snapping for climbable cover. A nav node on top of a box links to the
+ * ground only when a top cell centre lies within 0.17 m of the box edge and
+ * the ground cell beyond it keeps 0.33 m of clearance, i.e. when the min edge
+ * sits at 0.1 and the max edge at 0.4 (mod 0.5). Cover snapped this way is a
+ * legitimate hop for bots instead of a floating nav island.
+ */
+export function snapMin(v: number): number {
+  return Math.round((v - 0.1) / 0.5) * 0.5 + 0.1;
+}
+export function snapMax(v: number): number {
+  return Math.round((v - 0.4) / 0.5) * 0.5 + 0.4;
+}
+
+/** Low cover piece (crate stack, counter, planter, low wall), snapped to the grid rule above. */
 export function lowCover(x0: number, z0: number, x1: number, z1: number, h: number, mat: MaterialId, y = 0, tag = 'cover'): MapBlock {
-  return box(Math.min(x0, x1), y, Math.min(z0, z1), Math.abs(x1 - x0), h, Math.abs(z1 - z0), mat, { tag });
+  const ax = snapMin(Math.min(x0, x1));
+  const bx = Math.max(ax + 0.3, snapMax(Math.max(x0, x1)));
+  const az = snapMin(Math.min(z0, z1));
+  const bz = Math.max(az + 0.3, snapMax(Math.max(z0, z1)));
+  return box(ax, y, az, bx - ax, h, bz - az, mat, { tag });
+}
+
+/**
+ * Colliding clutter prop (crate, sacks, barrel, pot, water tank) with its min edges on the grid rule.
+ * Keep water tanks at scale ≤ 0.95: at scale 1 their 1.2 m top is a hair above the nav mantle limit.
+ */
+export function clutter(kind: PropKind, x: number, y: number, z: number, extra: Omit<MapProp, 'kind' | 'pos'> = {}): MapProp {
+  const fp = PROP_FOOTPRINT[kind];
+  const s = extra.scale ?? 1;
+  return prop(kind, snapMin(x - fp.hx * s) + fp.hx * s, y, snapMin(z - fp.hz * s) + fp.hz * s, extra);
+}
+
+/** Date palm: tall enough (≥ 7.5 m) that its crown is above the playable ceiling and never a nav floor. */
+export function palm(x: number, y: number, z: number, yaw: number, scale = 1.35): MapProp {
+  return prop('palm', x, y, z, { yaw, scale: Math.max(1.3, scale) });
 }
 
 /** Invisible collision-only block that the nav grid ignores (tag contains 'blocker'). */

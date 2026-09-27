@@ -11,12 +11,14 @@
  */
 import { box, prop, spawn } from '../../map/builder';
 import type { MapBlock, MapLight, MapProp, MapZone, SpawnPoint } from '../../map/schema';
-import { CEILING, MASS_H, blocker, lantern, mass, spawnFacing, wallX, wallZ, windowRow } from './util';
+import { CEILING, MASS_H, blocker, clutter, lantern, mass, palm, spawnFacing, wallX, wallZ, windowRow } from './util';
 
 /** Half-size of the level including the perimeter houses. */
 export const EXTENT = 31.5;
 /** Playable bounds half-size (1 m margin around the alleys). */
 export const BOUND = 31;
+/** Top of the playable bounds: the nav grid ignores surfaces above it (= util CEILING). */
+export const CEILING_BOUND = CEILING;
 
 export const SQUARE_CENTRE = { x: 0, y: 0, z: 2 };
 
@@ -113,19 +115,19 @@ function spawnHouse(s: 1 | -1): void {
   // Dressing: palm, pots, rug, bench, lanterns and windows on the inner facades.
   const inward = s > 0 ? 'east' : 'west';
   const fromSouth = s > 0 ? 'north' : 'south';
-  props.push(prop('palm', s * -26.5, 0, s * 13, { yaw: s * 0.4, scale: 1.1 }));
-  props.push(prop('pot', s * -27.4, 0, s * 5.7), prop('pot', s * -21.4, 0, s * 13.5, { scale: 0.9 }));
+  props.push(palm(s * -26.5, 0, s * 13, s * 0.4, 1.4));
+  props.push(clutter('pot', s * -27.4, 0, s * 5.7), clutter('pot', s * -21.4, 0, s * 13.5, { scale: 0.9 }));
   props.push(prop('rug', s * -24.5, 0, s * 9.5, { yaw: s * 0.1, tint: s > 0 ? [0.8, 0.25, 0.2] : [0.2, 0.35, 0.7] }));
   props.push(prop('bench', s * -24, 0, s * 5.35, { yaw: s > 0 ? 0 : Math.PI }));
-  props.push(prop('sacks', s * -27.3, 0, s * 12.2, { yaw: 0.6 }));
-  props.push(...windowRow('window', 'z', s * -27.95, s * 6, s * 12, 3, 1.6, inward));
-  props.push(...windowRow('shanasheel', 'z', s * -27.7, s * 7, s * 12, 2, 3.4, inward));
-  props.push(...windowRow('window', 'x', s * 5.05, s * -27, s * -22, 3, 1.6, fromSouth));
-  props.push(...windowRow('window', 'x', s * 13.95, s * -27, s * -24.5, 2, 4.6, s > 0 ? 'south' : 'north'));
+  props.push(clutter('sacks', s * -27.3, 0, s * 12.2, { yaw: 0.6 }));
+  props.push(...windowRow('window', 'z', s * -27.95, s * 6, s * 12, 2, 1.6, inward));
+  props.push(...windowRow('shanasheel', 'z', s * -27.7, s * 7, s * 12, 1, 3.4, inward));
+  props.push(...windowRow('window', 'x', s * 5.05, s * -27, s * -22, 2, 1.6, fromSouth));
+  props.push(...windowRow('window', 'x', s * 13.95, s * -27, s * -24.5, 1, 4.6, s > 0 ? 'south' : 'north'));
   props.push(prop('door', s * -21.05, 0, s * 12.4, { yaw: s > 0 ? -Math.PI / 2 : Math.PI / 2 }));
   props.push(prop('cloth_line', s * -24.5, 3.9, s * 7.2, { yaw: Math.PI / 2 }));
-  props.push(prop('flag', s * -19.5, MASS_H, s * 5.5, { tint: s > 0 ? [0.85, 0.2, 0.15] : [0.15, 0.45, 0.8] }));
-  for (const [x, z] of [[-21.3, 6.2], [-27.5, 9.8], [-22.9, 13.6]] as const) {
+  props.push(prop('flag', s * -18.7, 0, s * 9.3, { tint: s > 0 ? [0.85, 0.2, 0.15] : [0.15, 0.45, 0.8] }));  // team banner beside the street door
+  for (const [x, z] of [[-21.3, 6.2], [-27.5, 9.8]] as const) {
     const l = lantern(s * x, 2.4, s * z);
     props.push(l.prop);
     lights.push(l.light);
