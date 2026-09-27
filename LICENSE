@@ -1,0 +1,13 @@
+Twin Rivers: Arena — source code, original artwork, audio synthesis and level
+designs in this repository.
+
+Copyright (c) 2026 the repository owner (Abdullah01ahmed) and contributors.
+All rights reserved.
+
+No license has been chosen for this project yet. Until the owner selects and
+publishes one (for example MIT, Apache-2.0 or a proprietary licence), the code
+and assets may not be copied, modified or redistributed except as permitted by
+applicable law. Third-party components keep their own licences; see
+docs/LICENSES.md for the full attribution list (Electron, Babylon.js, React,
+zustand, ws, Vite, the Noto Kufi Arabic and Noto Naskh Arabic fonts under the
+SIL Open Font License 1.1, and others).

@@ -3,7 +3,7 @@
   "version": "0.1.0",
   "private": true,
   "description": "Twin Rivers: Arena — an original 5v5 first-person arena shooter set across Iraqi-inspired maps.",
-  "license": "SEE LICENSE IN LICENSE",
+  "license": "UNLICENSED",
   "workspaces": [
     "packages/*"
   ],
