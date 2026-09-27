@@ -1,6 +1,9 @@
 /*
  * In-match HUD. The HUD root ignores pointer events so the canvas keeps the
  * mouse; interactive overlays (pause, chat input, resume prompt) opt back in.
+ * Corner widgets use physical left/right positions (health always bottom-left,
+ * ammo and connection bottom-right, kill feed top-right) in both languages;
+ * only the text inside follows the UI direction.
  */
 .game-canvas-host {
   position: absolute;
@@ -57,7 +60,8 @@
 .hud__health {
   position: absolute;
   bottom: var(--hud-pad);
-  inset-inline-start: var(--hud-pad);
+  left: var(--hud-pad);
+  direction: ltr;
   display: flex;
   flex-direction: column;
   gap: 6px;
@@ -112,12 +116,13 @@
 .hud__ammo {
   position: absolute;
   bottom: var(--hud-pad);
-  inset-inline-end: var(--hud-pad);
+  right: var(--hud-pad);
+  direction: ltr;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: 6px;
-  text-align: end;
+  text-align: right;
 }
 
 .hud__ammo-count {
@@ -286,7 +291,8 @@
 .hud__killfeed {
   position: absolute;
   top: 16px;
-  inset-inline-end: var(--hud-pad);
+  right: var(--hud-pad);
+  direction: ltr;
   display: flex;
   flex-direction: column;
   align-items: flex-end;
@@ -570,11 +576,12 @@
   text-align: center;
 }
 
-/* ---- connection & fps (bottom-right corner, above ammo) ---------------- */
+/* ---- connection & fps (bottom-right corner, above the ammo block) ------ */
 .hud__conn {
   position: absolute;
-  top: 16px;
-  inset-inline-start: var(--hud-pad);
+  bottom: calc(var(--hud-pad) + 132px);
+  right: var(--hud-pad);
+  direction: ltr;
   display: flex;
   align-items: center;
   gap: 8px;
@@ -656,7 +663,7 @@
 .hud__chat {
   position: absolute;
   bottom: calc(var(--hud-pad) + 110px);
-  inset-inline-start: var(--hud-pad);
+  left: var(--hud-pad);
   display: flex;
   flex-direction: column;
   gap: 4px;
@@ -693,6 +700,8 @@
   font-weight: 700;
   color: var(--team-2);
   margin-inline-end: 6px;
+  /* Latin names next to Latin text must not fuse into one bidi run in RTL. */
+  unicode-bidi: isolate;
 }
 
 .hud__chat-input {
@@ -801,22 +810,14 @@ html[dir='rtl'] .pause__title {
   direction: ltr;
 }
 
+/* Two team tables side by side when there is room, stacked otherwise. */
 .sb-overlay__teams {
   display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-columns: repeat(auto-fit, minmax(min(100%, 380px), 1fr));
   gap: 0;
 }
 
-.sb-overlay__teams > * + * {
-  border-inline-start: 1px solid var(--line);
-}
-
-@media (max-width: 760px) {
-  .sb-overlay__teams {
-    grid-template-columns: 1fr;
-  }
-  .sb-overlay__teams > * + * {
-    border-inline-start: 0;
-    border-top: 1px solid var(--line);
-  }
+.sb-overlay__teams > * {
+  min-width: 0;
+  border-top: 1px solid var(--line);
 }

@@ -701,6 +701,9 @@ button.card:hover:not(:disabled) {
   font-family: var(--font-display);
   font-variant-numeric: tabular-nums;
   font-size: var(--fs-0);
+  /* "140 ms" reads the same way in both languages. */
+  direction: ltr;
+  unicode-bidi: isolate;
 }
 
 .ping--good {

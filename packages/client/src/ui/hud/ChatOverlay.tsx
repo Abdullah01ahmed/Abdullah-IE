@@ -32,8 +32,7 @@ export function ChatOverlay() {
     <div className={`hud__chat${open ? ' hud__chat--open' : ''}`} data-testid="hud-chat">
       {visible.map((m) => (
         <div key={m.id} className={`hud__chat-msg team-${m.team}`}>
-          <span className="hud__chat-who">{m.name}</span>
-          <span>{m.text}</span>
+          <span className="hud__chat-who">{m.name}</span> <span>{m.text}</span>
         </div>
       ))}
       {open && (

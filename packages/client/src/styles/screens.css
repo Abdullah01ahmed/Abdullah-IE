@@ -788,17 +788,11 @@ html[dir='rtl'] .results__team-name {
   font-family: var(--font-display);
 }
 
-.results__grid {
+.results__cards {
   display: grid;
-  grid-template-columns: minmax(240px, 300px) minmax(0, 1fr);
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
   gap: 18px;
-  align-items: start;
-}
-
-@media (max-width: 820px) {
-  .results__grid {
-    grid-template-columns: 1fr;
-  }
+  align-items: stretch;
 }
 
 .mvp {
@@ -806,6 +800,7 @@ html[dir='rtl'] .results__team-name {
   flex-direction: column;
   gap: 8px;
   align-items: center;
+  justify-content: center;
   text-align: center;
   padding: 20px;
   border-top: 3px solid var(--team);

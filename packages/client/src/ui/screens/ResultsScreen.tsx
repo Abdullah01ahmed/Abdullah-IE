@@ -62,33 +62,31 @@ export function ResultsScreen() {
           </div>
         </div>
 
-        <div className="results__grid">
-          <div className="stack">
-            {mvp && (
-              <div className={`panel mvp team-${mvp.team}`} data-testid="results-mvp">
-                <IconTrophy size={28} className="text-team" />
-                <span className="mvp__badge">{t('results.mvp')}</span>
-                <span className="mvp__name">{mvp.name}</span>
-                <span className="mvp__score">{mvp.score}</span>
-                <span className="dim">{t('results.kd', { k: mvp.kills, d: mvp.deaths })}</span>
+        <div className="results__cards">
+          {mvp && (
+            <div className={`panel mvp team-${mvp.team}`} data-testid="results-mvp">
+              <IconTrophy size={28} className="text-team" />
+              <span className="mvp__badge">{t('results.mvp')}</span>
+              <span className="mvp__name">{mvp.name}</span>
+              <span className="mvp__score">{mvp.score}</span>
+              <span className="dim">{t('results.kd', { k: mvp.kills, d: mvp.deaths })}</span>
+            </div>
+          )}
+          <Panel>
+            <div className="stack">
+              <div className="row row--between">
+                <span className="dim">{t('results.nextMap')}</span>
+                <strong>{bi(lang, nextMap.name, nextMap.nameAr)}</strong>
               </div>
-            )}
-            <Panel>
-              <div className="stack">
-                <div className="row row--between">
-                  <span className="dim">{t('results.nextMap')}</span>
-                  <strong>{bi(lang, nextMap.name, nextMap.nameAr)}</strong>
-                </div>
-                <div className="row row--between">
-                  <span className="dim" data-testid="results-countdown">{t('results.backToLobby', { n: t('common.seconds', { n: remaining }) })}</span>
-                </div>
+              <div className="row row--between">
+                <span className="dim" data-testid="results-countdown">{t('results.backToLobby', { n: t('common.seconds', { n: remaining }) })}</span>
               </div>
-            </Panel>
-          </div>
-          <Panel flush title={t('scoreboard.title')}>
-            <ScoreboardTeams board={board} selfId={selfId} hostId={room?.hostId ?? null} disconnectedIds={disconnected} />
+            </div>
           </Panel>
         </div>
+        <Panel flush title={t('scoreboard.title')}>
+          <ScoreboardTeams board={board} selfId={selfId} hostId={room?.hostId ?? null} disconnectedIds={disconnected} />
+        </Panel>
 
         <div className="results__actions">
           <Button variant="danger" onClick={leave} data-testid="results-leave">{t('common.leave')}</Button>
