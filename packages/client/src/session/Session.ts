@@ -215,6 +215,20 @@ export class Session {
     await this.stopHostedServer();
   }
 
+  /**
+   * Abort a join that is still connecting or waiting for the handshake (the
+   * Join screen's Cancel button). A no-op once connected. The pending join()
+   * promise rejects; its caller is expected to treat that rejection as a
+   * cancellation rather than an error.
+   */
+  cancelConnect(): void {
+    const store = useStore.getState();
+    if (store.connection.status !== 'connecting') return;
+    this.welcomeRejecter?.(new SessionError('DISCONNECTED', 'Connection cancelled.'));
+    this.teardownConnection();
+    store.setConnection({ status: 'idle', error: null, ping: 0 });
+  }
+
   private async stopHostedServer(): Promise<void> {
     if (!this.hosting) return;
     this.hosting = false;

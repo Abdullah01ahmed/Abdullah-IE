@@ -78,7 +78,7 @@ describe('MapRenderer under NullEngine', () => {
     renderer.dispose();
     env.dispose();
     materials.dispose();
-    expect(counts(scene)).toEqual(base);
+    expect(counts(scene), `leftover: ${scene.textures.map((t) => t.name).join(',')} | ${scene.meshes.map((m) => m.name).join(',')}`).toEqual(base);
   }
 
   it('builds and tears down the shanasheel map without leaking', async () => {

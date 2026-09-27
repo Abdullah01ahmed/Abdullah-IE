@@ -1,0 +1,108 @@
+/*
+ * Design tokens. Dark, warm palette: charcoal / deep night-blue surfaces,
+ * brass and copper accents, sand highlights. Team colours are exposed as
+ * --tigris / --euphrates and re-mapped to --team inside `.team-*` scopes.
+ */
+:root {
+  color-scheme: dark;
+
+  /* surfaces */
+  --bg-0: #090d14;
+  --bg-1: #0f1520;
+  --surface: #151d2a;
+  --surface-2: #1b2534;
+  --surface-3: #223042;
+  --line: rgba(222, 186, 128, 0.16);
+  --line-strong: rgba(222, 186, 128, 0.34);
+  --shadow: 0 18px 50px rgba(0, 0, 0, 0.45), 0 2px 6px rgba(0, 0, 0, 0.35);
+
+  /* accents */
+  --brass: #c99b4d;
+  --brass-2: #e3bb6c;
+  --brass-3: #f2d896;
+  --copper: #b5673a;
+  --sand: #e9d6b1;
+  --sand-2: #f5ecd9;
+
+  /* text */
+  --text: #f1e9da;
+  --text-dim: #bcae95;
+  --text-muted: #7f7663;
+  --text-on-brass: #1a1408;
+
+  /* teams */
+  --tigris: #2f8fa3;
+  --tigris-2: #63c3d6;
+  --tigris-soft: rgba(47, 143, 163, 0.18);
+  --euphrates: #d0733a;
+  --euphrates-2: #f2a26a;
+  --euphrates-soft: rgba(208, 115, 58, 0.18);
+  --team: var(--brass);
+  --team-2: var(--brass-2);
+  --team-soft: rgba(201, 155, 77, 0.18);
+
+  /* semantic */
+  --danger: #d94b3c;
+  --danger-2: #ff7a6a;
+  --ok: #67b96f;
+  --warn: #e3bb6c;
+
+  /* shape & motion */
+  --radius: 10px;
+  --radius-sm: 6px;
+  --radius-lg: 16px;
+  --dur: 180ms;
+  --dur-slow: 260ms;
+  --ease: cubic-bezier(0.2, 0.7, 0.2, 1);
+
+  /* type */
+  --font-display: 'Noto Kufi Arabic', 'Segoe UI', system-ui, sans-serif;
+  --font-body: system-ui, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-mono: 'Cascadia Mono', 'Consolas', 'SF Mono', ui-monospace, monospace;
+  --tracking-caps: 0.08em;
+  --fs-0: 0.78rem;
+  --fs-1: 0.875rem;
+  --fs-2: 1rem;
+  --fs-3: 1.2rem;
+  --fs-4: 1.6rem;
+  --fs-5: 2.2rem;
+  --fs-6: 3.2rem;
+
+  /* layout */
+  --gutter: clamp(16px, 3vw, 40px);
+  --content-w: 1180px;
+}
+
+/* Arabic: Naskh for body copy, no letter-spacing (it breaks glyph joining). */
+html[dir='rtl'] {
+  --font-body: 'Noto Naskh Arabic', 'Noto Kufi Arabic', system-ui, sans-serif;
+  --tracking-caps: 0;
+  --fs-0: 0.84rem;
+  --fs-1: 0.94rem;
+}
+
+.team-tigris {
+  --team: var(--tigris);
+  --team-2: var(--tigris-2);
+  --team-soft: var(--tigris-soft);
+}
+
+.team-euphrates {
+  --team: var(--euphrates);
+  --team-2: var(--euphrates-2);
+  --team-soft: var(--euphrates-soft);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --dur: 1ms;
+    --dur-slow: 1ms;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 1ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 1ms !important;
+  }
+}

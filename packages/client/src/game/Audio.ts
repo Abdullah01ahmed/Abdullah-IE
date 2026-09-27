@@ -44,10 +44,6 @@ export class GameAudio {
     return typeof window !== 'undefined' && typeof (window as Window & { AudioContext?: unknown }).AudioContext === 'function';
   }
 
-  get context(): AudioContext | null {
-    return this.ctx;
-  }
-
   /** Create/resume the context. Call from a user gesture. */
   resume(): void {
     if (!this.available) return;

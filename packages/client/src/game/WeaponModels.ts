@@ -162,14 +162,13 @@ function shatt9(scene: Scene, mats: WeaponMaterials, detail: WeaponDetail, group
   p.box('receiver', 0.06, 0.075, 0.24, mats.metal, 0, 0.02, 0.06);
   p.box('upper', 0.04, 0.02, 0.22, mats.darkMetal, 0, 0.065, 0.06);
   // Barrel shroud with cooling holes and a stubby barrel.
-  const shroud = p.tube('shroud', 0.046, 0.17, mats.darkMetal, 0, 0.03, 0.26);
+  p.tube('shroud', 0.046, 0.17, mats.darkMetal, 0, 0.03, 0.26);
   if (full) {
     for (let i = 0; i < 4; i++) {
       const hole = p.tube(`hole${i}`, 0.05, 0.012, mats.polymer, 0, 0.03, 0.2 + i * 0.04, 10);
       hole.scaling.set(0.9, 0.9, 1);
     }
   }
-  void shroud;
   p.tube('barrel', 0.018, 0.1, mats.darkMetal, 0, 0.03, 0.4);
   p.box('front_sight', 0.008, 0.04, 0.008, mats.darkMetal, 0, 0.065, 0.33);
   // Straight magazine ahead of the grip.
@@ -181,10 +180,8 @@ function shatt9(scene: Scene, mats: WeaponMaterials, detail: WeaponDetail, group
   if (full) p.box('trigger_guard', 0.01, 0.01, 0.06, mats.darkMetal, 0, -0.04, 0.02);
   // Side-folding stock (folded along the right side) and butt plate.
   p.pin('stock_hinge', 0.014, 0.02, mats.darkMetal, 0.04, 0.02, -0.05);
-  const stockA = p.box('stock_bar', 0.012, 0.012, 0.24, mats.metal, 0.045, 0.035, -0.17);
-  const stockB = p.box('stock_bar2', 0.012, 0.012, 0.24, mats.metal, 0.045, 0.0, -0.17);
-  void stockA;
-  void stockB;
+  p.box('stock_bar', 0.012, 0.012, 0.24, mats.metal, 0.045, 0.035, -0.17);
+  p.box('stock_bar2', 0.012, 0.012, 0.24, mats.metal, 0.045, 0.0, -0.17);
   p.box('butt_plate', 0.014, 0.07, 0.03, mats.polymer, 0.045, 0.017, -0.3);
   if (full) {
     // Left-side charging handle.

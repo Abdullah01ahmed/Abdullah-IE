@@ -24,7 +24,7 @@ import {
   type Scene,
   type Texture,
 } from '@babylonjs/core';
-import { hashSeed, type MapBlock, type MapDef, type MaterialId, type PropKind } from '@tra/shared';
+import { hashSeed, type MapBlock, type MapDef, type MaterialId } from '@tra/shared';
 import type { Environment } from './Environment';
 import { MaterialLibrary } from './Materials';
 import { PROP_MATERIALS, PropPalette, buildProp, type PropBuild, type PropContext } from './Props';

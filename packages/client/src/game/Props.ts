@@ -280,12 +280,10 @@ function palm(ctx: PropContext): PropBuild {
     const droop = 0.55 + (i % 3) * 0.18;
     const len = 2.6 + (i % 2) * 0.4;
     const f = b.plane(`frond${i}`, 0.7, len, p.frond, top.x, top.y, top.z);
-    // Plane spans y; pivot at its base: offset along its own up axis.
-    f.setPivotPoint(new Vector3(0, -len / 2, 0));
     f.position.addInPlace(new Vector3(Math.sin(ang) * 0.25, 0.1, Math.cos(ang) * 0.25));
-    f.rotation.set(-(Math.PI / 2 - droop), ang, 0);
     f.rotationQuaternion = Quaternion.RotationYawPitchRoll(ang, -(Math.PI / 2 - droop), 0);
-    // Move the frond so its base sits at the crown rather than its centre.
+    // The plane is centred on its origin: shift it half a length along its own
+    // up axis so the base sits at the crown.
     const along = new Vector3(0, len / 2, 0);
     along.rotateByQuaternionToRef(f.rotationQuaternion, along);
     f.position.addInPlace(along);
@@ -312,8 +310,7 @@ function lantern(ctx: PropContext): PropBuild {
 function table(ctx: PropContext): PropBuild {
   const b = new Builder(ctx, 'table');
   const p = ctx.palette;
-  const top = b.cylinder('top', 0.9, 0.9, 0.05, ctx.materials.get('wood') ?? p.wood, 0, 0.73, 0, 20);
-  top.material = ctx.materials.get('wood') ?? p.wood;
+  b.cylinder('top', 0.9, 0.9, 0.05, ctx.materials.get('wood') ?? p.wood, 0, 0.73, 0, 20);
   for (let i = 0; i < 4; i++) {
     const a = (i / 4) * Math.PI * 2 + Math.PI / 4;
     b.cylinder(`leg${i}`, 0.05, 0.05, 0.7, p.darkWood, Math.sin(a) * 0.32, 0.35, Math.cos(a) * 0.32, 8);
@@ -322,7 +319,7 @@ function table(ctx: PropContext): PropBuild {
   // Tea glasses on the table.
   for (let i = 0; i < 3; i++) {
     const a = i * 2.1;
-    b.cylinder(`glass${i}`, 0.05, 0.035, 0.09, p.lanternGlass, Math.sin(a) * 0.22, 0.8, Math.cos(a) * 0.22, 8).material = p.plastic;
+    b.cylinder(`glass${i}`, 0.05, 0.035, 0.09, p.plastic, Math.sin(a) * 0.22, 0.8, Math.cos(a) * 0.22, 8);
   }
   return b.finish();
 }
@@ -373,8 +370,7 @@ function crate(ctx: PropContext): PropBuild {
 function barrel(ctx: PropContext): PropBuild {
   const b = new Builder(ctx, 'barrel');
   const p = ctx.palette;
-  const body = b.cylinder('body', 0.6, 0.6, 0.95, ctx.materials.get('metal') ?? p.paintedMetal, 0, 0.475, 0, 18);
-  body.material = ctx.materials.get('metal') ?? p.paintedMetal;
+  b.cylinder('body', 0.6, 0.6, 0.95, ctx.materials.get('metal') ?? p.paintedMetal, 0, 0.475, 0, 18);
   for (const y of [0.2, 0.5, 0.8]) b.torus(`hoop${y}`, 0.62, 0.03, p.rust, 0, y, 0, 18);
   b.cylinder('lid', 0.56, 0.56, 0.02, p.rust, 0, 0.96, 0, 18);
   return b.finish();
@@ -419,8 +415,7 @@ function waterTank(ctx: PropContext): PropBuild {
   for (const [x, z] of [[-0.45, -0.45], [0.45, -0.45], [-0.45, 0.45], [0.45, 0.45]]) b.box(`leg${x}${z}`, 0.06, 0.4, 0.06, p.iron, x, 0.2, z);
   b.box('frame0', 1.0, 0.05, 0.05, p.iron, 0, 0.4, -0.45);
   b.box('frame1', 1.0, 0.05, 0.05, p.iron, 0, 0.4, 0.45);
-  const tank = b.cylinder('tank', 1.1, 1.1, 0.75, metal, 0, 0.8, 0, 20);
-  tank.material = metal;
+  b.cylinder('tank', 1.1, 1.1, 0.75, metal, 0, 0.8, 0, 20);
   b.cylinder('lid', 0.35, 0.35, 0.06, p.plastic, 0, 1.2, 0, 12);
   b.bar('pipe', new Vector3(0.4, 0.42, 0.3), new Vector3(0.4, -0.05, 0.3), 0.05, p.plastic, 8);
   return b.finish();
@@ -501,12 +496,9 @@ function fountain(ctx: PropContext): PropBuild {
   const tile = ctx.materials.get('tile') ?? p.stoneLight;
   const stone = ctx.materials.get('stone') ?? p.stoneLight;
   const water = ctx.materials.get('water') ?? p.waterFallback;
-  const outer = b.cylinder('basin', 2.8, 2.8, 0.7, stone, 0, 0.35, 0, 8);
-  outer.material = stone;
-  const rim = b.cylinder('rim', 2.9, 2.9, 0.12, tile, 0, 0.76, 0, 8);
-  rim.material = tile;
-  const inner = b.cylinder('inner', 2.5, 2.5, 0.6, tile, 0, 0.5, 0, 8);
-  inner.material = tile;
+  b.cylinder('basin', 2.8, 2.8, 0.7, stone, 0, 0.35, 0, 8);
+  b.cylinder('rim', 2.9, 2.9, 0.12, tile, 0, 0.76, 0, 8);
+  b.cylinder('inner', 2.5, 2.5, 0.6, tile, 0, 0.5, 0, 8);
   const surface = MeshBuilder.CreateDisc('water', { radius: 1.22, tessellation: 24 }, ctx.scene);
   surface.parent = b.root;
   surface.position.set(0, 0.68, 0);

@@ -19,13 +19,13 @@ import {
   ImageProcessingConfiguration,
   Mesh,
   MeshBuilder,
+  NullEngine,
   ParticleSystem,
   RawCubeTexture,
   SSAO2RenderingPipeline,
   Scene,
   ShadowGenerator,
   StandardMaterial,
-  Texture,
   Vector3,
   type AbstractEngine,
   type Camera,
@@ -154,9 +154,9 @@ export class Environment {
   // Construction helpers
   // ---------------------------------------------------------------------------
 
-  /** Small reflection cube for PBR specular/ambient (skipped on engines without GL textures). */
+  /** Small reflection cube for PBR specular/ambient (skipped on the headless NullEngine, which has no texture upload path). */
   private createEnvironmentCube(): void {
-    if (this.engine.getClassName() === 'NullEngine') return;
+    if (this.engine instanceof NullEngine) return;
     const atm = this.atmosphere;
     try {
       const ground: [number, number, number] = [atm.fogColor[0] * 0.5, atm.fogColor[1] * 0.42, atm.fogColor[2] * 0.32];
@@ -210,7 +210,8 @@ export class Environment {
   }
 
   private createPostProcessing(): void {
-    this.ssao?.dispose();
+    // `true` also drops the geometry buffer renderer SSAO forced on the scene.
+    this.ssao?.dispose(true);
     this.ssao = null;
     this.pipeline?.dispose();
     this.pipeline = null;
@@ -340,7 +341,7 @@ export class Environment {
     if (this.disposed) return;
     this.disposed = true;
     this.dust?.dispose();
-    this.ssao?.dispose();
+    this.ssao?.dispose(true);
     this.pipeline?.dispose();
     this.shadows?.dispose();
     this.casters.clear();

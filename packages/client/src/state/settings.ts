@@ -79,9 +79,13 @@ export interface ClientSettings {
   lastJoinAddress: string;
   lastHostPort: number;
   lastServerName: string;
+  /** Most recently joined addresses, newest first (max RECENT_ADDRESSES_MAX). */
+  recentAddresses: string[];
 }
 
 export const SETTINGS_VERSION = 1;
+
+export const RECENT_ADDRESSES_MAX = 5;
 
 export const DEFAULT_BINDINGS: Record<GameAction, string[]> = {
   forward: ['KeyW', 'ArrowUp'],
@@ -142,6 +146,7 @@ export const DEFAULT_SETTINGS: ClientSettings = {
   lastJoinAddress: '127.0.0.1',
   lastHostPort: 27600,
   lastServerName: '',
+  recentAddresses: [],
 };
 
 /** Apply a preset's values onto graphics settings. */
@@ -229,5 +234,19 @@ export function mergeSettings(saved: unknown): ClientSettings {
     lastJoinAddress: typeof saved.lastJoinAddress === 'string' ? saved.lastJoinAddress.slice(0, 120) : d.lastJoinAddress,
     lastHostPort: num(saved.lastHostPort, d.lastHostPort, 1024, 65535),
     lastServerName: typeof saved.lastServerName === 'string' ? saved.lastServerName.slice(0, 40) : d.lastServerName,
+    recentAddresses: sanitizeRecentAddresses(saved.recentAddresses),
   };
+}
+
+/** Keep only distinct, non-empty address strings (newest first), capped at RECENT_ADDRESSES_MAX. */
+export function sanitizeRecentAddresses(v: unknown): string[] {
+  if (!Array.isArray(v)) return [];
+  const out: string[] = [];
+  for (const item of v) {
+    if (typeof item !== 'string') continue;
+    const addr = item.trim().slice(0, 120);
+    if (addr && !out.includes(addr)) out.push(addr);
+    if (out.length >= RECENT_ADDRESSES_MAX) break;
+  }
+  return out;
 }

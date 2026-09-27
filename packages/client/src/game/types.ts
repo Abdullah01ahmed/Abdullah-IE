@@ -31,6 +31,13 @@ export interface IGameWorld {
   resize(): void;
   /** Tear down the engine. */
   dispose(): void;
+  /**
+   * True while the canvas holds pointer lock. During a match the UI shows a
+   * "click to resume" overlay when this is false (the UI owns pausing).
+   */
+  isPointerLocked?(): boolean;
+  /** Subscribe to pointer-lock changes; returns an unsubscribe function. */
+  onPointerLock?(cb: (locked: boolean) => void): () => void;
 }
 
 export interface GameWorldDeps {

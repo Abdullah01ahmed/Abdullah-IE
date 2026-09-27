@@ -94,7 +94,6 @@ export class Effects {
   private flashLightWorldLife = 0;
 
   private shells: SolidParticleSystem | null = null;
-  private shellMesh: Mesh | null = null;
   private readonly shellMat;
   private shellCursor = 0;
   private shellsAlive = 0;
@@ -197,7 +196,10 @@ export class Effects {
     this.decalMat.zOffset = -2;
     this.decalMat.backFaceCulling = true;
     this.disposables.push(this.decalMat);
+    // Hidden unit box repositioned onto the hit block for CreateDecal; it gets a
+    // material so the scene never has to create its lazy default material for it.
     this.decalSource = MeshBuilder.CreateBox('fx_decal_source', { size: 1 }, scene);
+    this.decalSource.material = this.decalMat;
     this.decalSource.isVisible = false;
     this.decalSource.isPickable = false;
     this.disposables.push(this.decalSource);
@@ -255,7 +257,6 @@ export class Effects {
     sps.initParticles();
     sps.setParticles();
     this.shells = sps;
-    this.shellMesh = mesh;
     this.shellCursor = 0;
     this.shellsAlive = 0;
   }
@@ -531,7 +532,6 @@ export class Effects {
     this.sparks.length = 0;
     this.shells?.dispose();
     this.shells = null;
-    this.shellMesh = null;
     for (const d of this.disposables) d.dispose();
     this.disposables.length = 0;
   }

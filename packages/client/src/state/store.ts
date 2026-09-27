@@ -99,6 +99,12 @@ export interface HudState {
   yaw: number;
   /** Player who last killed us (for the death screen). */
   killedBy: { id: number; name: string; weapon: string } | null;
+  /**
+   * Normalised crosshair spread (0 = still/settled, 1 = maximum), optionally
+   * published by the game from movement/airborne state. The HUD falls back to
+   * sprint/ADS flags when it is absent.
+   */
+  spread?: number;
 }
 
 export interface ChatMessage {

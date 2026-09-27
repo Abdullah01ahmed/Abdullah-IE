@@ -162,10 +162,6 @@ export class MaterialLibrary {
     return this.materials.get(id) ?? null;
   }
 
-  has(id: MaterialId): boolean {
-    return this.materials.has(id);
-  }
-
   uvScale(id: MaterialId): number {
     return MATERIAL_SPECS[id].uvScale;
   }

@@ -20,7 +20,7 @@
  * Generated sets are cached (byte-bounded) so a rematch is fast.
  */
 import type { MaterialId } from '@tra/shared';
-import { Field, cellFields, clamp01, fbmField, fract, grainAt, hash2, imod, mix, smoothstep, whiteNoise, type CellFields } from './noise';
+import { cellFields, clamp01, fbmField, fract, grainAt, hash2, imod, mix, smoothstep, whiteNoise, type CellFields } from './noise';
 
 export interface TextureSet {
   id: MaterialId;

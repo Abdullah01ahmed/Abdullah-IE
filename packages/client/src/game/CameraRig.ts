@@ -184,14 +184,6 @@ export class CameraRig {
     out.fov = verticalFov(input.hfovDeg, input.aspect) * (1 + (ADS_FOV_MULT - 1) * this.adsBlend);
     return out;
   }
-
-  get currentEyeHeight(): number {
-    return this.eye;
-  }
-
-  get adsFovBlend(): number {
-    return this.adsBlend;
-  }
 }
 
 function approach(v: number, target: number, step: number): number {

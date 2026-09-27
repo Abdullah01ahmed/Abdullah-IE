@@ -78,20 +78,10 @@ export class InterpolationBuffer {
     return [...this.players.keys()];
   }
 
-  has(id: number): boolean {
-    return this.players.has(id);
-  }
-
   /** Newest raw snapshot for a player (null if unknown). */
   latest(id: number): PlayerSnap | null {
     const arr = this.players.get(id);
     return arr && arr.length ? arr[arr.length - 1].s : null;
-  }
-
-  /** Server time of the newest sample for a player (or -Infinity). */
-  latestTime(id: number): number {
-    const arr = this.players.get(id);
-    return arr && arr.length ? arr[arr.length - 1].t : -Infinity;
   }
 
   remove(id: number): void {
