@@ -1,10 +1,13 @@
 import { execFileSync } from 'node:child_process';
 import { describe, expect, it } from 'vitest';
 import {
+  BTN,
   MOVEMENT,
   PROP_FOOTPRINT,
+  TICK_DT,
   buildCollisionWorld,
   buildNavGrid,
+  createPlayerState,
   findPath,
   floorHeightAt,
   largestComponent,
@@ -13,8 +16,11 @@ import {
   playerFits,
   reachableFrom,
   shanasheel,
+  simulateStep,
+  type InputCmd,
   type NavGrid,
   type NavNode,
+  type PlayerSimState,
   type SpawnPoint,
   type Vec3,
 } from '../src';
@@ -264,6 +270,99 @@ describe('shanasheel: collision and navigation', () => {
     for (const yard of [{ x: -11.5, y: 0.02, z: 10 }, { x: -11.5, y: 0.02, z: -11.5 }, { x: 11.5, y: 0.02, z: -10 }, { x: 11.5, y: 0.02, z: 11.5 }]) {
       expect(findPath(grid, nodeAt(yard).id, centreNode.id)).not.toBeNull();
     }
+  });
+});
+
+describe('shanasheel: movement', () => {
+  const cmd = (seq: number, partial: Partial<InputCmd>): InputCmd => ({ seq, moveX: 0, moveY: 0, yaw: 0, pitch: 0, buttons: 0, time: 0, ...partial });
+  /** Drop a player at `pos`, let them settle, then walk forward facing `yaw` for `seconds`. */
+  function walker(pos: Vec3): PlayerSimState {
+    const s = createPlayerState(pos, 0, 'dijla7', 'shatt9');
+    for (let i = 0; i < 60; i++) simulateStep(s, cmd(i + 1, {}), world, TICK_DT);
+    return s;
+  }
+  function walk(s: PlayerSimState, yawDeg: number, seconds: number, buttons = 0): void {
+    const yaw = (yawDeg * Math.PI) / 180;
+    for (let i = 0; i < seconds * 60; i++) simulateStep(s, cmd(i + 1, { moveY: 1, yaw, buttons }), world, TICK_DT);
+  }
+  const NORTH = 0, EAST = 90, SOUTH = 180, WEST = -90;
+
+  it('climbs the tea-house stairs onto rooftop R1', () => {
+    const s = walker({ x: -3.0, y: 0.02, z: -15.0 });
+    walk(s, NORTH, 4.5);
+    expect(s.onGround).toBe(true);
+    expect(s.pos.y).toBeCloseTo(SHANASHEEL_ROOFTOPS[0].y, 1);
+    walk(s, EAST, 1.5);
+    expect(s.pos.x).toBeGreaterThan(0);
+    expect(s.pos.y).toBeCloseTo(SHANASHEEL_ROOFTOPS[0].y, 1);
+  });
+
+  it('climbs the W1 courtyard stair (walking south) and the second flight (walking east) onto R2', () => {
+    const s = walker({ x: -15.2, y: 0.02, z: 12 });
+    walk(s, SOUTH, 1.6);
+    expect(s.pos.y).toBeCloseTo(3.0, 1);
+    expect(s.pos.z).toBeLessThan(5.2);
+    walk(s, WEST, 0.5);   // onto the gallery over the alley
+    walk(s, SOUTH, 0.6);  // level with the second flight
+    walk(s, EAST, 2.5);
+    expect(s.onGround).toBe(true);
+    expect(s.pos.y).toBeCloseTo(SHANASHEEL_ROOFTOPS[1].y, 1);
+    expect(s.pos.x).toBeGreaterThan(-12);
+  });
+
+  it('climbs the E1 courtyard stair (walking north) and the second flight (walking west) onto R3', () => {
+    const s = walker({ x: 15.2, y: 0.02, z: -12 });
+    walk(s, NORTH, 1.6);
+    expect(s.pos.y).toBeCloseTo(3.0, 1);
+    expect(s.pos.z).toBeGreaterThan(-5.2);
+    walk(s, EAST, 0.5);
+    walk(s, NORTH, 0.6);
+    walk(s, WEST, 2.5);
+    expect(s.onGround).toBe(true);
+    expect(s.pos.y).toBeCloseTo(SHANASHEEL_ROOFTOPS[2].y, 1);
+  });
+
+  it('crosses the west shanasheel bridge from the W1 annex roof to the W2 roof', () => {
+    const s = walker({ x: -15.3, y: 3.0, z: 0.8 });
+    walk(s, SOUTH, 2.0);
+    expect(s.onGround).toBe(true);
+    expect(s.pos.y).toBeCloseTo(3.0, 1);
+    expect(s.pos.z).toBeLessThan(-3.5);
+  });
+
+  it('drops from R2 onto the annex roof and from there into the west alley', () => {
+    const s = walker({ x: -10.5, y: SHANASHEEL_ROOFTOPS[1].y, z: 0.5 });
+    walk(s, WEST, 1.2);
+    expect(s.pos.y).toBeCloseTo(3.0, 1);
+    walk(s, WEST, 1.8);
+    expect(s.onGround).toBe(true);
+    expect(s.pos.y).toBeCloseTo(0, 1);
+    expect(s.pos.x).toBeLessThan(-17.4);
+  });
+
+  it('drops from the tea-house roof onto a balcony and from there into the side lane', () => {
+    // Crouch-walk off the roof edge: horizontal speed carries through the
+    // fall, so at full walking speed you clear the 1.8 m balcony and land in
+    // the lane instead (also a valid way down, 3 m lower).
+    const s = walker({ x: -3.0, y: SHANASHEEL_ROOFTOPS[0].y, z: -10.6 });
+    walk(s, WEST, 0.9, BTN.CROUCH);
+    for (let i = 0; i < 60; i++) simulateStep(s, cmd(i + 1, {}), world, TICK_DT);
+    expect(s.onGround).toBe(true);
+    expect(s.pos.y).toBeGreaterThanOrEqual(2.95); // balcony deck or its kerb
+    expect(s.pos.y).toBeLessThanOrEqual(3.5);
+    walk(s, WEST, 1.0);
+    expect(s.onGround).toBe(true);
+    expect(s.pos.y).toBeCloseTo(0, 1);
+  });
+
+  it('leaves the tigris courtyard through the screened street corridor', () => {
+    const s = walker({ x: -26.5, y: 0, z: 8.6 });
+    walk(s, EAST, 1.0);   // up to the screen wall
+    walk(s, SOUTH, 0.5);  // around its south end
+    walk(s, EAST, 0.5);   // to the street wing
+    walk(s, NORTH, 0.4);  // line up with the corridor
+    walk(s, EAST, 1.5);   // through it
+    expect(s.pos.x).toBeGreaterThan(-19); // in the west alley
   });
 });
 

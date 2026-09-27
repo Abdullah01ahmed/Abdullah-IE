@@ -33,8 +33,8 @@ props.push(prop('sign', -1.1, 3.0, -20.6, { text: 'سوق الصفافير', yaw
 blocks.push(lowCover(-15.0, -19.9, -13.0, -19.2, 0.9, 'wood', 0, 'cover'));
 blocks.push(lowCover(-9.0, -22.0, -7.0, -21.3, 0.9, 'wood', 0, 'cover'));
 blocks.push(lowCover(-3.8, -19.9, -2.0, -19.2, 0.9, 'wood', 0, 'cover'));
-props.push(clutter('sacks', -13.3, 0, -21.5, { yaw: 0.4 }), clutter('crate', -6.0, 0, -19.7, { scale: 0.8 }), clutter('barrel', -11.6, 0, -21.6));
-props.push(clutter('pot', -1.9, 0, -21.6), prop('rug', -11.0, 0, -20.6, { yaw: Math.PI / 2, tint: [0.65, 0.2, 0.2] }));
+props.push(clutter('sacks', -11.3, 0, -21.5, { yaw: 0.4 }), clutter('crate', -16.0, 0, -21.6, { scale: 0.8 }), clutter('barrel', -5.6, 0, -21.6));
+props.push(clutter('pot', -0.9, 0, -21.6), prop('rug', -11.0, 0, -20.6, { yaw: Math.PI / 2, tint: [0.65, 0.2, 0.2] }));
 light(-13.5, 2.8, -20.6);
 light(-4.5, 2.8, -20.6);
 
@@ -52,7 +52,7 @@ blocks.push(lowCover(-6.0, 16.2, -5.0, 17.2, 1.0, 'wood', 0, 'cover'));
 blocks.push(lowCover(-0.6, 21.0, 1.0, 21.8, 0.8, 'stone', 0, 'cover'));
 blocks.push(lowCover(4.0, 19.2, 5.6, 20.0, 1.0, 'wood', 0, 'cover'));
 blocks.push(lowCover(14.0, 21.0, 15.0, 22.0, 1.0, 'wood', 0, 'cover'));
-props.push(clutter('barrel', -20.5, 0, 18.5), clutter('sacks', -3.0, 0, 18.4, { yaw: 0.7 }), clutter('crate', 12.4, 0, 19.7, { scale: 0.8 }));
+props.push(clutter('barrel', -20.5, 0, 18.5), clutter('crate', 12.4, 0, 19.7, { scale: 0.8 }));
 props.push(prop('cloth_line', -8.0, 4.6, 17.6, { yaw: Math.PI / 2, scale: 0.7 }), prop('cloth_line', 8.0, 4.4, 20.6, { yaw: Math.PI / 2, scale: 0.7 }));
 light(-20.0, 2.9, 18.7);
 light(16.0, 2.9, 21.7);

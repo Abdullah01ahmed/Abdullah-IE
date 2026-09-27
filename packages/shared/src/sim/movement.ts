@@ -77,11 +77,12 @@ function sweepHorizontal(world: CollisionWorld, s: PlayerSimState, dx: number, d
       const ox = pos.x, oy = pos.y, oz = pos.z;
       const up = sweepAxis(world, pos, 'y', stepHeight, s.stance);
       if (up > 0.001) {
+        // `remaining` carries the sign of travel, so compare magnitudes.
         const fwd = sweepAxis(world, pos, axis, remaining, s.stance);
-        if (fwd > 1e-4) {
+        if (Math.abs(fwd) > 1e-4) {
           // Settle onto whatever is below (the step) — never below the start height.
           sweepAxis(world, pos, 'y', -up, s.stance);
-          return fwd < remaining - 1e-6;
+          return Math.abs(fwd) < Math.abs(remaining) - 1e-6;
         }
       }
       pos.x = ox; pos.y = oy; pos.z = oz;

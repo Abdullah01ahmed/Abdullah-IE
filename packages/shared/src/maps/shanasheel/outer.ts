@@ -105,7 +105,7 @@ function spawnHouse(s: 1 | -1): void {
   blocks.push(box(Math.min(s * -23.8, s * -22.2), 2.6, Math.min(s * 14, s * 16.2), 1.6, MASS_H - 2.6, 2.2, mat, { tag: 'spawn-house' }));
   blocks.push(box(Math.min(s * -21, s * -19), 2.6, Math.min(s * 7, s * 8.6), 2, MASS_H - 2.6, 1.6, mat, { tag: 'spawn-house' }));
   // Screen walls 1.5 m inside each corridor mouth (0.4 thick, centred on the grid).
-  blocks.push(...wallZ(s * -22.5, Math.min(s * 6.3, s * 9.3), Math.max(s * 6.3, s * 9.3), 0, 2.8, 'plaster', [], { tag: 'screen' }));
+  blocks.push(...wallZ(s * -22.5, Math.min(s * 6.5, s * 9.5), Math.max(s * 6.5, s * 9.5), 0, 2.8, 'plaster', [], { tag: 'screen' }));
   blocks.push(...wallX(s * 12.5, Math.min(s * -24.8, s * -21.2), Math.max(s * -24.8, s * -21.2), 0, 2.8, 'plaster', [], { tag: 'screen' }));
   // Wooden pergola beams over the courtyard's back half: cover from above,
   // 0.24 m thick and centred on grid lines so they never become nav floors.

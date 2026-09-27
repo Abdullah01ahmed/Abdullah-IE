@@ -34,29 +34,36 @@ blocks.push(...wallX(-5, TH.x0, TH.x1, 0, TH_H, brick, [
 // South wall: back door onto lane A' / the souq junction.
 blocks.push(...wallX(-16, TH.x0, TH.x1, 0, TH_H, brick, [door(1.4), win(-1.2, 1.0, 1.2, 1.0)], { tag: 'teahouse' }));
 // West wall: side door under the second flight (2.95 m headroom).
-blocks.push(...wallZ(-4, -15.8, -5.2, 0, TH_H, brick, [door(-11.2)], { tag: 'teahouse' }));
+blocks.push(...wallZ(-4, -15.8, -5.2, 0, TH_H, brick, [door(-9.4)], { tag: 'teahouse' }));
 // East wall: side door plus a shooting window.
 blocks.push(...wallZ(4, -15.8, -5.2, 0, TH_H, brick, [door(-11.2), win(-14.4)], { tag: 'teahouse' }));
 
-// Interior stair along the west wall: two straight flights, 1.4 m wide.
-blocks.push(...stairs(-3.8, 0, -15.8, 'north', 1.4, 2.95, 4.4, 'stone', { tag: 'teahouse-stairs' }));
-blocks.push(...stairs(-3.8, 2.95, -11.4, 'north', 1.4, 2.95, 4.4, 'stone', { tag: 'teahouse-stairs' }));
-// Roof slab (top 5.9) with the stair hatch x -3.8..-1.8, z -10.6..-7.0.
-blocks.push(deck(TH.x0, TH.z0, TH.x1, -10.6, TEAHOUSE_ROOF_TOP, 'roof', 0.3, { tag: 'teahouse-roof' }));
-blocks.push(deck(-1.8, -10.6, TH.x1, -7.0, TEAHOUSE_ROOF_TOP, 'roof', 0.3, { tag: 'teahouse-roof' }));
-blocks.push(deck(TH.x0, -10.6, -3.8, -7.0, TEAHOUSE_ROOF_TOP, 'roof', 0.3, { tag: 'teahouse-roof' }));
-blocks.push(deck(TH.x0, -7.0, TH.x1, TH.z1, TEAHOUSE_ROOF_TOP, 'roof', 0.3, { tag: 'teahouse-roof' }));
+// Interior stair along the west wall: a 1.4 m landing by the back wall, then
+// two straight 1.6 m wide flights rising north; the second one passes through
+// a hatch in the roof that is exactly the stair's width so the nav grid links
+// the top step to the roof.
+blocks.push(...stairs(-3.8, 0, -14.4, 'north', 1.6, 2.95, 4.4, 'stone', { tag: 'teahouse-stairs' }));
+blocks.push(...stairs(-3.8, 2.95, -10.0, 'north', 1.6, 2.95, 4.4, 'stone', { tag: 'teahouse-stairs' }));
+// Roof slab (top 5.9) around the hatch x -3.8..-2.2, z -9.8..-5.6 (the climb
+// needs step height + capsule height of headroom, so the hatch spans nearly
+// the whole second flight).
+blocks.push(deck(TH.x0, TH.z0, TH.x1, -9.8, TEAHOUSE_ROOF_TOP, 'roof', 0.3, { tag: 'teahouse-roof' }));
+blocks.push(deck(-2.2, -9.8, TH.x1, -5.6, TEAHOUSE_ROOF_TOP, 'roof', 0.3, { tag: 'teahouse-roof' }));
+blocks.push(deck(TH.x0, -9.8, -3.8, -5.6, TEAHOUSE_ROOF_TOP, 'roof', 0.3, { tag: 'teahouse-roof' }));
+blocks.push(deck(TH.x0, -5.6, TH.x1, TH.z1, TEAHOUSE_ROOF_TOP, 'roof', 0.3, { tag: 'teahouse-roof' }));
 
 // Shanasheel balconies on both side facades at 3 m: the roof's second way
 // down (drop 2.9 m onto the balcony, then 3 m to the lane). The timber eave
-// above each balcony lets the nav grid link roof and balcony cells.
+// above each balcony lets the nav grid link roof and balcony cells, and the
+// knee-high lattice kerb keeps the balcony's edge cells walkable so the drop
+// into the lane is a nav link too.
 for (const s of [-1, 1] as const) {
   const inner = s * 4.2;
-  const outerX = s * 5.6;
+  const outerX = s * 6.0;
   blocks.push(deck(inner, -11.6, outerX, -9.6, LOW_ROOF, 'wood', 0.15, { tag: 'balcony' }));
-  blocks.push(box(Math.min(outerX, outerX + s * 0.1), LOW_ROOF, -11.6, 0.1, 1.0, 2.0, 'lattice', { tag: 'balcony-rail' }));
-  blocks.push(box(Math.min(inner, outerX), LOW_ROOF, -11.7, 1.4, 1.0, 0.1, 'lattice', { tag: 'balcony-rail' }));
-  blocks.push(box(Math.min(inner, outerX), LOW_ROOF, -9.6, 1.4, 1.0, 0.1, 'lattice', { tag: 'balcony-rail' }));
+  blocks.push(box(Math.min(outerX, outerX + s * 0.1), LOW_ROOF, -11.6, 0.1, 0.45, 2.0, 'lattice', { tag: 'balcony-rail' }));
+  blocks.push(box(Math.min(inner, outerX), LOW_ROOF, -11.7, 1.8, 0.45, 0.1, 'lattice', { tag: 'balcony-rail' }));
+  blocks.push(box(Math.min(inner, outerX), LOW_ROOF, -9.6, 1.8, 0.45, 0.1, 'lattice', { tag: 'balcony-rail' }));
   blocks.push(deck(inner, -11.6, s * 4.7, -9.6, TEAHOUSE_ROOF_TOP, 'wood', 0.3, { tag: 'eave' }));
   props.push(prop('shanasheel', s * 4.35, 3.6, -13.6, { yaw: s > 0 ? Math.PI / 2 : -Math.PI / 2, scale: 0.9 }));
   props.push(prop('shanasheel', s * 4.35, 3.6, -7.4, { yaw: s > 0 ? Math.PI / 2 : -Math.PI / 2, scale: 0.9 }));

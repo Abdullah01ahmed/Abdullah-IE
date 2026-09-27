@@ -68,8 +68,15 @@ function quarter(m: QuarterMaterials): Quarter {
   blocks.push(...wallZ(-7, 0.2, 4.8, 0, ROOM_H, m.h1, [door(1.8), win(3.6, 0.9)], { tag: 'w1' }));          // A to the square
   blocks.push(...wallZ(-12, 0.2, 4.8, 0, ROOM_H, m.h1, [door(2.4)], { tag: 'w1' }));                        // A <-> B
   blocks.push(deck(-16.2, -0.2, -12.2, 5.2, LOW_ROOF, 'roof', 0.3, { tag: 'w1-annex-roof' }));
+  // Timber gallery cantilevered over the west alley: landing for the second
+  // flight, and a 3 m drop into the alley (knee-high kerb keeps it walkable).
+  blocks.push(deck(-17.4, -0.2, -16.2, 5.2, LOW_ROOF, 'wood', 0.2, { tag: 'gallery' }));
+  blocks.push(box(-17.5, LOW_ROOF, -0.2, 0.1, 0.45, 5.4, 'lattice', { tag: 'gallery-kerb' }));
   blocks.push(box(-12.2, ROOM_H, -0.2, 5.4, UPPER_ROOF - ROOM_H, 5.4, m.h1, { tag: 'w1-upper' }));
-  blocks.push(deck(-12.7, -0.2, -12.2, 3.4, UPPER_ROOF, 'wood', 0.3, { tag: 'eave' }));
+  // Eaves either side of the second flight's arrival let the nav grid link the
+  // wing roof to the annex roof below (the drop route down from R2).
+  blocks.push(deck(-12.7, -0.2, -12.2, 1.2, UPPER_ROOF, 'wood', 0.3, { tag: 'eave' }));
+  blocks.push(deck(-12.7, 2.4, -12.2, 5.2, UPPER_ROOF, 'wood', 0.3, { tag: 'eave' }));
   blocks.push(parapetPiece('south', -12.2, -0.2, -6.8, 5.2, UPPER_ROOF, -12.2, -6.8, m.h1));
   blocks.push(parapetPiece('north', -12.2, -0.2, -6.8, 5.2, UPPER_ROOF, -12.2, -6.8, m.h1));
   blocks.push(parapetPiece('east', -12.2, -0.2, -6.8, 5.2, UPPER_ROOF, -0.2, 5.2, m.h1));
@@ -78,13 +85,15 @@ function quarter(m: QuarterMaterials): Quarter {
   blocks.push(...wallZ(-16, 5.2, 15.8, 0, YARD_WALL, m.yard, [door(11.3)], { tag: 'w1-yard' }));
   blocks.push(...wallX(16, -16.2, -6.8, 0, YARD_WALL, m.yard, [door(-10.9)], { tag: 'w1-yard' }));
   blocks.push(...wallZ(-7, 5.2, 15.8, 0, YARD_WALL, m.yard, [door(6.3)], { tag: 'w1-yard' }));
-  // Stairs: courtyard -> annex roof (3 m), annex roof -> wing roof (5.6 m).
+  // Stairs: courtyard -> annex roof (3 m) along the west wall, then the second
+  // flight across the middle of the annex roof up to the wing roof (5.6 m),
+  // mounted from the gallery side.
   blocks.push(...stairs(-15.8, 0, 9.8, 'south', 1.2, LOW_ROOF, 4.6, 'stone', { tag: 'w1-stairs' }));
-  blocks.push(...stairs(-15.8, LOW_ROOF, 3.6, 'east', 1.2, UPPER_ROOF - LOW_ROOF, 3.6, 'stone', { tag: 'w1-stairs' }));
+  blocks.push(...stairs(-15.2, LOW_ROOF, 1.2, 'east', 1.2, UPPER_ROOF - LOW_ROOF, 3.0, 'stone', { tag: 'w1-stairs' }));
   // Rooftop clutter and courtyard dressing.
   props.push(clutter('water_tank', -8.0, UPPER_ROOF, 1.0, { scale: 0.95 }), prop('satellite_dish', -11.4, UPPER_ROOF, 4.6, { yaw: 0.8 }));
   props.push(prop('ac_unit', -7.1, 4.3, 3.6, { yaw: Math.PI / 2 }), prop('antenna', -7.4, UPPER_ROOF, 0.4));
-  props.push(clutter('water_tank', -13.4, LOW_ROOF, 2.2, { scale: 0.8 }), prop('ac_unit', -15.9, 4.2, 12.5, { yaw: -Math.PI / 2 }));
+  props.push(clutter('water_tank', -13.4, LOW_ROOF, 4.0, { scale: 0.8 }), prop('ac_unit', -15.9, 4.2, 12.5, { yaw: -Math.PI / 2 }));
   props.push(palm(-9.4, 0.02, 12.6, 0.9, 1.4), clutter('pot', -14.4, 0.02, 15.3));
   props.push(prop('rug', -11.5, 0.02, 9.0, { yaw: 0.06, tint: [0.75, 0.3, 0.2] }));
   props.push(prop('bench', -12.6, 0.02, 15.45, { yaw: 0 }), prop('bicycle', -7.55, 0.02, 13.0, { yaw: Math.PI / 2 }));
@@ -124,19 +133,19 @@ function quarter(m: QuarterMaterials): Quarter {
   light(-16.5, 2.8, -12.0);
 
   // ---- West passage (z -2.8..-0.2) and the shanasheel bridge over it at 3 m ----------
-  blocks.push(deck(-14.8, -3.0, -13.2, 0.0, LOW_ROOF, 'wood', 0.15, { tag: 'bridge' }));
-  blocks.push(box(-14.9, LOW_ROOF, -2.8, 0.1, 1.0, 2.6, 'lattice', { tag: 'bridge-rail' }));
-  blocks.push(box(-13.2, LOW_ROOF, -2.8, 0.1, 1.0, 2.6, 'lattice', { tag: 'bridge-rail' }));
+  blocks.push(deck(-16.1, -3.0, -14.5, 0.0, LOW_ROOF, 'wood', 0.15, { tag: 'bridge' }));
+  blocks.push(box(-16.2, LOW_ROOF, -2.8, 0.1, 1.0, 2.6, 'lattice', { tag: 'bridge-rail' }));
+  blocks.push(box(-14.5, LOW_ROOF, -2.8, 0.1, 1.0, 2.6, 'lattice', { tag: 'bridge-rail' }));
   props.push(prop('shanasheel', -9.0, 3.4, -0.25, { yaw: Math.PI, scale: 0.9 }), prop('shanasheel', -9.0, 3.4, -2.75, { yaw: 0, scale: 0.9 }));
   props.push(prop('arch', -6.9, 0, -1.5, { yaw: Math.PI / 2 }), prop('arch', -16.1, 0, -1.5, { yaw: Math.PI / 2 }));
-  props.push(clutter('barrel', -8.2, 0, -2.5), clutter('crate', -12.0, 0, -0.75, { scale: 0.85 }));
+  props.push(clutter('barrel', -8.2, 0, -2.5), clutter('crate', -12.0, 0, -0.55, { scale: 0.85 }));
   light(-11.0, 2.7, -2.7);
 
   // ---- Shop strip (z -19.2..-15.2) between W2 and the covered souq: solid mass
   //      with a bakery cut through it (souq <-> W2 courtyard) and the side lane. -----
   blocks.push(mass(-16.2, -19.2, -11.8, -15.2, MASS_H, m.strip, { tag: 'strip' }));
   blocks.push(mass(-8.2, -19.2, -6.8, -15.2, MASS_H, m.strip, { tag: 'strip' }));
-  blocks.push(mass(-4.2, -19.2, -1.5, -15.2, MASS_H, m.strip, { tag: 'strip' }));
+  blocks.push(mass(-4.2, -19.2, -1.5, -16.2, MASS_H, m.strip, { tag: 'strip' }));   // stops at the tea house's back wall
   blocks.push(box(-11.8, ROOM_H, -19.2, 3.6, MASS_H - ROOM_H, 4.0, m.strip, { tag: 'strip' }));
   blocks.push(...wallX(-19, -11.8, -8.2, 0, ROOM_H, m.strip, [door(-10.7)], { tag: 'shop' }));
   blocks.push(patch(-11.8, -18.8, -8.2, -15.2, 'stone', { tag: 'shop-floor' }));
