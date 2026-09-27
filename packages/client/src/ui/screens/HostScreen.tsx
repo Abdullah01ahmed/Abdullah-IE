@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { DEFAULT_MATCH_SETTINGS, MAX_NAME_LENGTH, type MatchSettings } from '@tra/shared';
 import { useStore } from '../../state/store';
 import { session } from '../../session/Session';
@@ -33,6 +33,11 @@ export function HostScreen() {
 
   const busy = hosting.starting;
   const defaultServerName = t('host.serverNamePlaceholder', { name: playerName.trim() || '…' });
+
+  // A failure from an earlier attempt must not greet the user on a fresh visit.
+  useEffect(() => {
+    useStore.getState().setHosting({ error: null });
+  }, []);
 
   const back = () => {
     useStore.getState().setConnection({ error: null, status: 'idle' });

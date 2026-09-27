@@ -172,12 +172,13 @@ function KillFeed() {
 
 function KillRow({ entry: e, selfId }: { entry: KillFeedEntry; selfId: number | null }) {
   const t = useT();
+  const lang = useLang();
   const involved = e.killerId === selfId || e.victimId === selfId;
   const environmental = e.killerId === e.victimId || e.weapon === 'fall' || e.weapon === 'world';
   return (
     <div className={`hud__kill${involved ? ' hud__kill--self' : ''}`}>
       {!environmental && <span className={`hud__kill-name team-${e.killerTeam}`}>{e.killerName}</span>}
-      <span className="hud__kill-glyph" title={weaponName(t, e.weapon, 'en')}><WeaponGlyph weapon={e.weapon} size={16} /></span>
+      <span className="hud__kill-glyph" title={weaponName(t, e.weapon, lang)}><WeaponGlyph weapon={e.weapon} size={16} /></span>
       {e.headshot && <span className="hud__kill-hs" title={t('hud.headshot')}><IconHeadshot size={14} /></span>}
       <span className={`hud__kill-name team-${e.victimTeam}`}>{e.victimName}</span>
     </div>

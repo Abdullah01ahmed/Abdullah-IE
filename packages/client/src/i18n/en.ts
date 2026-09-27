@@ -47,6 +47,7 @@ export const en = {
   'menu.playerNamePlaceholder': 'Enter your call sign',
   'menu.nameHint': '1–20 characters. Shown to other players.',
   'menu.nameRequired': 'Enter a player name first.',
+  'menu.tagline': 'A 5v5 arena shooter set in the old cities of the Two Rivers. Fast matches, two teams, one square to hold.',
 
   // ---- errors (by code) ---------------------------------------------------
   'error.title': 'Connection problem',

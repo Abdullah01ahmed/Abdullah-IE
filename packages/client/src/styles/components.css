@@ -494,6 +494,11 @@ html[dir='rtl'] .slider input[type='range']::-webkit-slider-runnable-track {
   opacity: 0.4;
 }
 
+/* A disabled option that is the current value (e.g. the "custom" preset) stays legible. */
+.segmented__opt:disabled[aria-pressed='true'] {
+  opacity: 1;
+}
+
 .segmented__tag {
   margin-inline-start: 0.4em;
   font-size: 0.7em;

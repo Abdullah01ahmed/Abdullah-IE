@@ -47,6 +47,7 @@ export const ar: Record<keyof typeof en, string> = {
   'menu.playerNamePlaceholder': 'اكتب اسمك الحركي',
   'menu.nameHint': 'من 1 إلى 20 حرفاً. يظهر لبقية اللاعبين.',
   'menu.nameRequired': 'اكتب اسم اللاعب أولاً.',
+  'menu.tagline': 'لعبة تصويب ساحات 5 ضد 5 في مدن الرافدين القديمة. مباريات سريعة، وفريقان، وساحة واحدة تُحسَم فيها المعركة.',
 
   // ---- errors (by code) ---------------------------------------------------
   'error.title': 'مشكلة في الاتصال',

@@ -36,7 +36,7 @@ export function MainMenu() {
       <div className="menu" style={{ position: 'relative', zIndex: 1 }}>
         <div className="menu__brand">
           <Wordmark size="lg" />
-          <p className="menu__tag">{t('host.subtitle')}</p>
+          <p className="menu__tag">{t('menu.tagline')}</p>
         </div>
 
         <nav className="panel panel--glass menu__nav" aria-label="Main menu">
